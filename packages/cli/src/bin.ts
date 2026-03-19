@@ -9,6 +9,7 @@ import { createInspectCommand } from './commands/inspect.js';
 import { createDeleteCommand } from './commands/delete.js';
 import { createConfigCommand } from './commands/config.js';
 import { createDuplicatesCommand } from './commands/duplicates.js';
+import { createServeCommand } from './commands/serve.js';
 
 // Get package.json for version
 const __filename = fileURLToPath(import.meta.url);
@@ -30,11 +31,12 @@ program.addCommand(createInspectCommand());
 program.addCommand(createDeleteCommand());
 program.addCommand(createConfigCommand());
 program.addCommand(createDuplicatesCommand());
+program.addCommand(createServeCommand());
 
 // Set list as default command if no command specified
 const args = process.argv;
 const hasCommand = args.some(arg =>
-  ['list', 'inspect', 'delete', 'config', 'duplicates', '--help', '-h', '--version', '-V'].includes(arg)
+  ['list', 'inspect', 'delete', 'config', 'duplicates', 'serve', '--help', '-h', '--version', '-V'].includes(arg)
 );
 
 if (!hasCommand && args.length > 2) {

@@ -9,7 +9,8 @@
   "scripts": {
     "build": "npm run build --workspaces --if-present",
     "clean": "npm run clean --workspaces --if-present",
-    "dev:cli": "npm run build -w packages/cli && node packages/cli/dist/bin.js"
+    "dev:cli": "npm run build -w packages/cli && node packages/cli/dist/bin.js",
+    "dev:serve": "npm run build && node packages/cli/dist/bin.js serve"
   },
   "engines": {
     "node": ">=18.0.0"
