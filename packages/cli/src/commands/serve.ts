@@ -17,7 +17,7 @@ export function createServeCommand(): Command {
         const app = createApp();
 
         const server = app.listen(port, () => {
-          console.log(`Skillscan API server running at http://localhost:${port}`);
+          console.log(`Skillscan dashboard running at http://localhost:${port}`);
           console.log(`API endpoints available at http://localhost:${port}/api/...`);
         });
 
