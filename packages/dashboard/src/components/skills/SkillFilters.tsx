@@ -17,7 +17,6 @@ const scopes: Array<{ value: SkillScope | ''; label: string }> = [
   { value: 'user', label: 'User' },
   { value: 'plugin', label: 'Plugin' },
   { value: 'project', label: 'Project' },
-  { value: 'marketplace', label: 'Marketplace' },
 ];
 
 export function SkillFilters({

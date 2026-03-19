@@ -12,8 +12,6 @@ export interface ClaudeCodeMetadata {
  *
  * Supported patterns:
  * - /cache/{marketplace}/{plugin}/{version}/skills/{name}/SKILL.md
- * - /marketplaces/{marketplace}/skills/{name}/SKILL.md
- * - /marketplaces/{marketplace}/plugins/{plugin}/skills/{name}/SKILL.md
  *
  * Versions can be semver (5.0.5) or git hashes (385c1469c567)
  *
@@ -33,23 +31,6 @@ export function extractClaudeCodeMetadata(absolutePath: string): ClaudeCodeMetad
     metadata.marketplace = cacheMatch[1];
     metadata.plugin = cacheMatch[2];
     metadata.version = cacheMatch[3];
-    return metadata;
-  }
-
-  // Pattern 2: /marketplaces/{marketplace}/plugins/{plugin}/skills/{name}/SKILL.md
-  const marketplacePluginPattern = /\/marketplaces\/([^/]+)\/plugins\/([^/]+)\/skills\/[^/]+\/SKILL\.md$/i;
-  const marketplacePluginMatch = normalizedPath.match(marketplacePluginPattern);
-  if (marketplacePluginMatch) {
-    metadata.marketplace = marketplacePluginMatch[1];
-    metadata.plugin = marketplacePluginMatch[2];
-    return metadata;
-  }
-
-  // Pattern 3: /marketplaces/{marketplace}/skills/{name}/SKILL.md
-  const marketplacePattern = /\/marketplaces\/([^/]+)\/skills\/[^/]+\/SKILL\.md$/i;
-  const marketplaceMatch = normalizedPath.match(marketplacePattern);
-  if (marketplaceMatch) {
-    metadata.marketplace = marketplaceMatch[1];
     return metadata;
   }
 

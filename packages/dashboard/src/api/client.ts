@@ -1,4 +1,4 @@
-export type SkillScope = "user" | "plugin" | "project" | "marketplace";
+export type SkillScope = "user" | "plugin" | "project";
 
 export interface Skill {
   id: string;

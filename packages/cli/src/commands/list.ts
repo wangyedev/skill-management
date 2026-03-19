@@ -8,7 +8,7 @@ export function createListCommand(): Command {
   const command = new Command('list')
     .description('List all skills')
     .option('-c, --client <name>', 'Filter by client name')
-    .option('-s, --scope <scope>', 'Filter by scope (user/shared/system)')
+    .option('-s, --scope <scope>', 'Filter by scope (user/project/plugin)')
     .option('--json', 'Output as JSON')
     .action(async (options) => {
       try {

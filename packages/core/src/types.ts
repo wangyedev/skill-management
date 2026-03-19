@@ -1,4 +1,4 @@
-export type SkillScope = "user" | "plugin" | "project" | "marketplace";
+export type SkillScope = "user" | "plugin" | "project";
 
 export interface SkillLocation {
   path: string;       // glob pattern like "~/.claude/skills/*/SKILL.md"
@@ -20,7 +20,7 @@ export interface Skill {
   name: string;         // From frontmatter
   description: string;  // From frontmatter
   client: string;       // "claude-code" | "codex" | ...
-  scope: SkillScope;    // "user" | "plugin" | "project" | "marketplace"
+  scope: SkillScope;    // "user" | "plugin" | "project"
   path: string;         // Absolute path
   plugin?: string;      // e.g., "superpowers"
   version?: string;     // e.g., "5.0.5" or git hash

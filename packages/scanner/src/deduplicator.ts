@@ -5,7 +5,6 @@ import type { Skill, DuplicateGroup, SkillScope } from "@skillscan/core";
  * Priority order for selecting canonical skills (higher = more preferred)
  */
 const SCOPE_PRIORITY: Record<SkillScope, number> = {
-  marketplace: 4,
   plugin: 3,
   user: 2,
   project: 1,
@@ -47,7 +46,7 @@ function compareVersions(v1: string | undefined, v2: string | undefined): number
 
 /**
  * Selects the canonical skill from a group based on priority rules:
- * 1. Scope priority: marketplace > plugin > user > project
+ * 1. Scope priority: plugin > user > project
  * 2. Within same scope, prefer latest version (semver > git hash)
  * 3. If no version, prefer by path (most recent)
  */

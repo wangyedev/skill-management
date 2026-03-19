@@ -7,7 +7,6 @@ export const DEFAULT_CONFIG: SkillscanConfig = {
       locations: [
         { path: "~/.claude/skills/*/SKILL.md", scope: "user" },
         { path: "~/.claude/plugins/cache/**/skills/*/SKILL.md", scope: "plugin" },
-        { path: "~/.claude/plugins/marketplaces/**/skills/*/SKILL.md", scope: "marketplace" },
         { path: "$CWD/.claude/skills/*/SKILL.md", scope: "project" }
       ],
       parser: "yaml-frontmatter"

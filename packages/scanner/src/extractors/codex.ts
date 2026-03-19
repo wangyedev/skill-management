@@ -4,7 +4,6 @@
 export interface CodexMetadata {
   plugin?: string;
   version?: string;
-  marketplace?: string;
 }
 
 /**

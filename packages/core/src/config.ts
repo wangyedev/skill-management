@@ -6,7 +6,7 @@ import { DEFAULT_CONFIG } from "./constants.js";
 import type { SkillscanConfig } from "./types.js";
 
 // Zod schemas for validation
-const SkillScopeSchema = z.enum(["user", "plugin", "project", "marketplace"]);
+const SkillScopeSchema = z.enum(["user", "plugin", "project"]);
 
 const SkillLocationSchema = z.object({
   path: z.string(),
