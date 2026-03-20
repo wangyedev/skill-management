@@ -16,9 +16,16 @@ export function createServeCommand(): Command {
 
         const app = createApp();
 
-        const server = app.listen(port, () => {
+        const server = app.listen(port, '127.0.0.1', () => {
           console.log(`Skillscan dashboard running at http://localhost:${port}`);
           console.log(`API endpoints available at http://localhost:${port}/api/...`);
+        }).on('error', (err: NodeJS.ErrnoException) => {
+          if (err.code === 'EADDRINUSE') {
+            console.error(`Error: Port ${port} is already in use`);
+          } else {
+            console.error(`Error starting server: ${err.message}`);
+          }
+          process.exit(1);
         });
 
         // Graceful shutdown

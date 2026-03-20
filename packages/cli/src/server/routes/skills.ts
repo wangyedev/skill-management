@@ -25,7 +25,12 @@ router.get('/skills', async (req, res, next) => {
     }
 
     if (scope && typeof scope === 'string') {
-      const normalizedScope = scope.toLowerCase() as SkillScope;
+      const validScopes: SkillScope[] = ['user', 'plugin', 'project'];
+      const normalizedScope = scope.toLowerCase();
+      if (!validScopes.includes(normalizedScope as SkillScope)) {
+        res.status(400).json({ error: `Invalid scope. Must be one of: ${validScopes.join(', ')}` });
+        return;
+      }
       skills = skills.filter(skill => skill.scope === normalizedScope);
     }
 

@@ -1,6 +1,6 @@
 import { readFile, unlink } from "fs/promises";
 import { basename, dirname } from "path";
-import { loadConfig, generateId } from "@skillscan/core";
+import { loadConfig, generateId, expandPath } from "@skillscan/core";
 import type {
   SkillscanConfig,
   Skill,
@@ -34,7 +34,11 @@ export class SkillScanner {
     for (const [clientName, clientConfig] of Object.entries(this.config.clients)) {
       try {
         // Resolve all file paths for this client
-        const resolvedPaths = await resolveSkillPaths(clientConfig.locations);
+        const resolution = await resolveSkillPaths(clientConfig.locations);
+        for (const err of resolution.errors) {
+          errors.push({ path: err.pattern, error: err.error });
+        }
+        const resolvedPaths = resolution.paths;
 
         // Get the parser for this client
         const parser = getParser(clientConfig.parser);
@@ -59,15 +63,18 @@ export class SkillScanner {
             }
 
             // Get skill name from frontmatter or derive from directory name
-            let name = parseResult.frontmatter.name as string | undefined;
-            if (!name) {
-              // Derive name from directory containing SKILL.md
+            const rawName = parseResult.frontmatter.name;
+            let name: string;
+            if (typeof rawName === 'string' && rawName.trim()) {
+              name = rawName;
+            } else {
               const skillDir = dirname(path);
               name = basename(skillDir);
             }
 
             // Get description from frontmatter or use empty string
-            const description = (parseResult.frontmatter.description as string) || "";
+            const rawDesc = parseResult.frontmatter.description;
+            const description = typeof rawDesc === 'string' ? rawDesc : "";
 
             // Build the Skill object
             const skill: Skill = {
@@ -148,12 +155,15 @@ export class SkillScanner {
    * @returns true if deleted, false if not found
    */
   async delete(id: string): Promise<boolean> {
-    // First, scan to find the skill with this ID
     const scanResult = await this.scan();
     const skill = scanResult.skills.find((s) => s.id === id);
 
     if (!skill) {
       return false;
+    }
+
+    if (!this.isPathWithinConfiguredLocations(skill.path)) {
+      throw new Error(`Refusing to delete: path is outside configured skill directories`);
     }
 
     try {
@@ -162,5 +172,19 @@ export class SkillScanner {
     } catch (error) {
       return false;
     }
+  }
+
+  private isPathWithinConfiguredLocations(skillPath: string): boolean {
+    for (const clientConfig of Object.values(this.config.clients)) {
+      for (const location of clientConfig.locations) {
+        const expandedBase = expandPath(
+          location.path.replace(/\*.*$/, '')  // Strip glob portion
+        );
+        if (skillPath.startsWith(expandedBase)) {
+          return true;
+        }
+      }
+    }
+    return false;
   }
 }

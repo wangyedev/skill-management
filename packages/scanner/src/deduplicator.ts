@@ -25,14 +25,23 @@ function compareVersions(v1: string | undefined, v2: string | undefined): number
 
   // If both are semver, compare them
   if (isSemver1 && isSemver2) {
-    const parts1 = v1.split(".").map((p) => parseInt(p, 10) || 0);
-    const parts2 = v2.split(".").map((p) => parseInt(p, 10) || 0);
+    // Split off prerelease suffix (e.g., "5.0.0-beta.1" -> "5.0.0" + "beta.1")
+    const [base1, pre1] = v1.split("-", 2);
+    const [base2, pre2] = v2.split("-", 2);
+
+    const parts1 = base1.split(".").map((p) => parseInt(p, 10) || 0);
+    const parts2 = base2.split(".").map((p) => parseInt(p, 10) || 0);
 
     for (let i = 0; i < Math.max(parts1.length, parts2.length); i++) {
       const p1 = parts1[i] || 0;
       const p2 = parts2[i] || 0;
       if (p1 !== p2) return p1 - p2;
     }
+
+    // Same base version: release (no prerelease) wins over prerelease
+    if (!pre1 && pre2) return 1;
+    if (pre1 && !pre2) return -1;
+    if (pre1 && pre2) return pre1.localeCompare(pre2);
     return 0;
   }
 

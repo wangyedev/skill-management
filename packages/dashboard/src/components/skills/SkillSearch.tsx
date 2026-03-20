@@ -13,7 +13,8 @@ export function SkillSearch({ onChange }: SkillSearchProps) {
     }, 300);
 
     return () => clearTimeout(timer);
-  }, [value, onChange]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [value]);
 
   return (
     <div className="bg-white p-4 border-b border-slate-200">

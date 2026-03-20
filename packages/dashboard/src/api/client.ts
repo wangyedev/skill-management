@@ -69,7 +69,14 @@ export interface DeleteSkillResponse {
 async function fetchJSON<T>(url: string, options?: RequestInit): Promise<T> {
   const response = await fetch(url, options);
   if (!response.ok) {
-    throw new Error(`HTTP error! status: ${response.status}`);
+    let message = `HTTP error! status: ${response.status}`;
+    try {
+      const body = await response.json();
+      if (body.error) message = body.error;
+    } catch {
+      // use default message
+    }
+    throw new Error(message);
   }
   return response.json();
 }

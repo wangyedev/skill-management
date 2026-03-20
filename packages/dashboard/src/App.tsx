@@ -21,6 +21,7 @@ function App() {
   const [search, setSearch] = useState('');
   const [selectedSkillId, setSelectedSkillId] = useState<string | null>(null);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [deleteError, setDeleteError] = useState<string | null>(null);
 
   const { data: skillsData, isLoading, error } = useSkills({
     client: selectedClient || undefined,
@@ -50,13 +51,14 @@ function App() {
 
   const handleDeleteConfirm = async () => {
     if (!selectedSkillId) return;
+    setDeleteError(null);
 
     try {
       await deleteMutation.mutateAsync(selectedSkillId);
       setSelectedSkillId(null);
       setShowDeleteModal(false);
     } catch (error) {
-      console.error('Failed to delete skill:', error);
+      setDeleteError((error as Error).message || 'Failed to delete skill');
     }
   };
 
@@ -142,11 +144,13 @@ function App() {
       <ConfirmModal
         isOpen={showDeleteModal}
         title="Delete Skill"
-        message="Are you sure you want to delete this skill? This action cannot be undone."
+        message={deleteError
+          ? `Error: ${deleteError}`
+          : "Are you sure you want to delete this skill? This action cannot be undone."}
         confirmText="Delete"
         cancelText="Cancel"
         onConfirm={handleDeleteConfirm}
-        onCancel={() => setShowDeleteModal(false)}
+        onCancel={() => { setShowDeleteModal(false); setDeleteError(null); }}
       />
     </Layout>
   );

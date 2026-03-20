@@ -7,17 +7,23 @@ export interface ResolvedSkillPath {
   scope: SkillScope;
 }
 
+export interface PathResolutionResult {
+  paths: ResolvedSkillPath[];
+  errors: Array<{ pattern: string; error: string }>;
+}
+
 /**
  * Resolves skill file paths from location configurations
  * Expands ~ and $CWD, then uses fast-glob to find matching files
  *
  * @param locations - Array of skill location configurations with glob patterns
- * @returns Array of resolved absolute file paths with their scopes
+ * @returns Resolved paths and any errors encountered
  */
 export async function resolveSkillPaths(
   locations: SkillLocation[]
-): Promise<ResolvedSkillPath[]> {
-  const results: ResolvedSkillPath[] = [];
+): Promise<PathResolutionResult> {
+  const paths: ResolvedSkillPath[] = [];
+  const errors: Array<{ pattern: string; error: string }> = [];
 
   for (const location of locations) {
     // Expand environment variables and tildes
@@ -33,17 +39,18 @@ export async function resolveSkillPaths(
 
       // Add all matched paths with the scope
       for (const path of matchedPaths) {
-        results.push({
+        paths.push({
           path,
           scope: location.scope,
         });
       }
     } catch (error) {
-      // Silently skip locations that fail to resolve
-      // The scanner will handle individual file errors
-      continue;
+      errors.push({
+        pattern: location.path,
+        error: error instanceof Error ? error.message : String(error),
+      });
     }
   }
 
-  return results;
+  return { paths, errors };
 }

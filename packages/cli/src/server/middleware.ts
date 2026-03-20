@@ -5,7 +5,7 @@ import cors from 'cors';
  * CORS middleware - allow all origins for local development
  */
 export const corsMiddleware = cors({
-  origin: '*',
+  origin: /^https?:\/\/localhost(:\d+)?$/,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization'],
 });
@@ -33,7 +33,8 @@ export function errorHandler(
   // Determine status code - default to 500
   const statusCode = res.statusCode !== 200 ? res.statusCode : 500;
 
+  const safeMessage = statusCode >= 500 ? 'Internal server error' : (err.message || 'Internal server error');
   res.status(statusCode).json({
-    error: err.message || 'Internal server error',
+    error: safeMessage,
   });
 }
